@@ -89,24 +89,26 @@ class TodoList extends React.Component {
     render = () => {
         return (
             <div className="todoList">
-                    <div className="todoList-header">
-                        <TodoListTitle title={this.props.title} />
-                        <AddNewItemForm addItem={this.addTask} />
-                    </div>
-                    <TodoListTasks 
-                        changeStatus={this.changeStatus}
-                        changeTitle={this.changeTitle}
-                        tasks={this.state.tasks.filter(task =>
-                            this.state.filterValue === "All" 
-                            ?
-                            true
-                            :
-                            this.state.filterValue === "Completed"
-                            ?
-                            task.isDone === true
-                            :
-                            task.isDone === false
-                    )} />
+                    <div>
+                        <div className="todoList__header">
+                            <TodoListTitle title={this.props.title} />
+                            <AddNewItemForm addItem={this.addTask} />
+                        </div>
+                        <TodoListTasks 
+                            changeStatus={this.changeStatus}
+                            changeTitle={this.changeTitle}
+                            tasks={this.state.tasks.filter(task =>
+                                this.state.filterValue === "All" 
+                                ?
+                                true
+                                :
+                                this.state.filterValue === "Completed"
+                                ?
+                                task.isDone === true
+                                :
+                                task.isDone === false
+                        )} />
+                     </div>
                     <TodoListFooter 
                         changeFilter={this.changeFilter} 
                         filterValue={this.state.filterValue} 

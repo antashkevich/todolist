@@ -37,7 +37,7 @@ class App extends React.Component {
                     <h2 className="header__title">Create New List</h2>
                     <AddNewItemForm addItem={this.addTodoList} />
                 </div>
-                <div className="App">
+                <div className="lists-container container">
                     {todolists}
                 </div>
             </>

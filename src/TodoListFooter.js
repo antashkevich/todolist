@@ -17,22 +17,22 @@ class TodoListFooter extends React.Component {
 
     render = (props) => {
 
-        let classForAll = this.props.filterValue === "All" ? "filter-active" : "";
-        let classForCompleted = this.props.filterValue === "Completed" ? "filter-active" : "";
-        let classForActive = this.props.filterValue === "Active" ? "filter-active" : "";
+        let classForAll = this.props.filterValue === "All" ? "filter__btn_active " : "";
+        let classForCompleted = this.props.filterValue === "Completed" ? "filter__btn_active " : "";
+        let classForActive = this.props.filterValue === "Active" ? "filter__btn_active " : "";
 
         return (
-            <div className="todoList-footer">
+            <div className="todoList__footer filter">
                 {this.state.isHidden
                 ? 
                 <>
-                    <button onClick={this.onAllFilterClick} className={classForAll}>All</button>
-                    <button onClick={this.onCompletedFilterClick} className={classForCompleted}>Completed</button>
-                    <button onClick={this.onActiveFilterClick} className={classForActive}>Active</button>
-                    <span onClick={this.onShowFiltersClick}>Hide</span>
+                    <button onClick={this.onAllFilterClick} className={classForAll + "filter__btn filter__btn_sort"}>All</button>
+                    <button onClick={this.onCompletedFilterClick} className={classForCompleted + "filter__btn filter__btn_sort"}>Completed</button>
+                    <button onClick={this.onActiveFilterClick} className={classForActive + "filter__btn filter__btn_sort"}>Active</button>
+                    <button className="filter__btn filter__btn_control" onClick={this.onShowFiltersClick}>Hide</button>
                 </>
                 :
-                <span onClick={this.onHideFiltersClick}>Show</span>
+                <button className="filter__btn filter__btn_control" onClick={this.onHideFiltersClick}>Show</button>
                 }
                
             </div>

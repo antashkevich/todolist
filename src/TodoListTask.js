@@ -32,32 +32,41 @@ class TodoListTask extends React.Component {
     onAddTaskEnterPress = (e) => (e.key === "Enter") ? this.deactivateEditMode() : null;
     
     render = () => {
-        let classForTask = this.props.task.isDone ? "done" : "";
+        let classForTask = this.props.task.isDone ? "todoList__item_done " : "";
 
         return (
-            <div className={classForTask + " todoList-task"}>
-                <input 
-                    id={this.props.item}
-                    type="checkbox" 
-                    checked={this.props.task.isDone}
-                    onChange={this.onIsDoneChaged}
-                />
-                <label>
-                    <span>{this.props.task.id}</span> - 
-                    {this.state.editMode
-                        ?
+            <div className="todoList__item">
+                <label className="todoList__label">
+                    <div className="checkbox">
                         <input 
-                            onChange={this.onTitleChanged}
-                            onKeyPress={this.onAddTaskEnterPress}
-                            onBlur={this.deactivateEditMode} 
-                            value={this.props.task.title} 
-                            autoFocus={true}
-                        />
-                        :
-                        <span onClick={this.activateEditMode}>{this.props.task.title}</span>
-                    },
-                    <span> {this.props.task.priority}</span>
+                            id={this.props.item}
+                            className="checkbox__input"
+                            type="checkbox" 
+                            checked={this.props.task.isDone}
+                            onChange={this.onIsDoneChaged} />
+                        <span className="checkbox__custom"></span>
+                    </div>
+                    <div className={classForTask + "todoList__content"}>
+                        <div className="todoList__value-container">
+                            <span>{this.props.task.id}.</span> 
+                            {this.state.editMode
+                                ?
+                                <input 
+                                    className="todoList__input"
+                                    onChange={this.onTitleChanged}
+                                    onKeyPress={this.onAddTaskEnterPress}
+                                    onBlur={this.deactivateEditMode} 
+                                    value={this.props.task.title} 
+                                    autoFocus={true}
+                                />
+                                :
+                                <span className="todoList__value">{this.props.task.title}</span>
+                            }
+                        </div>
+                        <span className="todoList__priority">{this.props.task.priority}</span>
+                    </div>
                 </label>
+                <button className="todoList__edit-btn" onClick={this.activateEditMode}>edit</button>
             </div>
         );
     }
