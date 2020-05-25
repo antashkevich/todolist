@@ -1,4 +1,5 @@
 import React from 'react';
+import PopupRemove from './PopupRemove';
 
 class TodoListTask extends React.Component {
     constructor(props) {
@@ -6,7 +7,8 @@ class TodoListTask extends React.Component {
 
         this.state = {
             editMode: false,
-        }
+            showPopup: false
+        };
     }
     
     onIsDoneChaged = (e) => {
@@ -30,10 +32,29 @@ class TodoListTask extends React.Component {
     };
 
     onAddTaskEnterPress = (e) => (e.key === "Enter") ? this.deactivateEditMode() : null;
+
+    showPopup = () => {
+        this.setState({
+            showPopup: true
+        });
+    }
+
+    hidePopup = () => {
+        this.setState({
+            showPopup: false
+        });
+    }
+
+    removeTask = (taskId) => {
+        this.props.removeTask(taskId);
+        this.setState({
+            showPopup: false
+        });
+    }
     
     render = () => {
         let classForTask = this.props.task.isDone ? "todoList__item_done " : "";
-
+        let taskId = this.props.task.id;
         return (
             <div className="todoList__item">
                 <label className="todoList__label">
@@ -67,6 +88,15 @@ class TodoListTask extends React.Component {
                     </div>
                 </label>
                 <button className="todoList__edit-btn" onClick={this.activateEditMode}>edit</button>
+                <button className="btn-close btn-close__task" onClick={this.showPopup} />
+                {this.state.showPopup
+                ?
+                    <PopupRemove
+                        removeTask={() => this.removeTask(taskId)}
+                        hidePopup={this.hidePopup} />
+                :
+                    null
+                }
             </div>
         );
     }

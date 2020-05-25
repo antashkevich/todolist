@@ -1,67 +1,41 @@
 import React from 'react';
-import './App.css';
 import TodoListTasks from './TodoListTasks';
 import TodoListFooter from './TodoListFooter';
 import TodoListTitle from './TodoListTitle';
 import AddNewItemForm from './AddNewItemForm';
+import { connect } from 'react-redux';
+import { addNewTask, changeTask, removeTask, removeTodolist, getTodolistTasks } from './store';
+import PopupRemove from './PopupRemove';
 
 class TodoList extends React.Component {
-    
     constructor(props) {
         super(props);
 
-        this.newTaskId = 1;
-
         this.state = {
-            tasks: [],
             filterValue: "All",
+            showPopup: false
         };
     }
 
     componentDidMount() {
-        this.restoreState();
-    };
-
-    saveState = () => {
-        let stateAsString = JSON.stringify(this.state);
-        localStorage.setItem("our-state-" + this.props.id, stateAsString);
-    };
-
-    restoreState = () => {
-        let state = this.state;
-
-        let stateAsString = localStorage.getItem("our-state-" + this.props.id);
-        if(stateAsString != null) {
-            state = JSON.parse(stateAsString);
-        }
-
-        this.setState(state, () => {
-            this.state.tasks.forEach(t => {
-                if(t.id === this.newTaskId) {
-                    this.newTaskId = t.id + 1;
-                }
-            })
-        });
+        this.props.getTodolistTasks(this.props.id);
     };
 
     changeFilter = (newFilterValue) => {
         this.setState({
             filterValue: newFilterValue,
-        }, this.saveState);
+        });
     };
 
     addTask = (newText) => {
         let newTask = {
-            id: this.newTaskId,
+            id: this.props.tasks.length + 1,
             title: newText,
             isDone: false,
             priority: "low"
         };
         this.newTaskId++;
-        let newTasks = [...this.state.tasks, newTask];
-        this.setState({
-            tasks: newTasks
-        }, this.saveState);
+        this.props.addNewTask(newTask, this.props.id);
     };
 
     changeStatus = (taskId, isDone) => {
@@ -73,50 +47,79 @@ class TodoList extends React.Component {
     };
 
     changeTask = (taskId, obj) => {
-        let newTasks = this.state.tasks.map(t => {
-            if(t.id !== taskId) {
-                return t;
-            } else {
-                return {...t, ...obj}
-            }
-        })
-
-        this.setState({
-            tasks: newTasks,
-        }, this.saveState)
+        this.props.changeTask(taskId, obj, this.props.id);
     };
 
+    showPopup = () => {
+        this.setState({
+            showPopup: true
+        });
+    }
+
+    hidePopup = () => {
+        this.setState({
+            showPopup: false
+        });
+    }
+
+    removeTodolist = () => {
+        this.props.removeTodolist(this.props.id);
+    }
+
+    removeTask =(taskId) => {
+        this.props.removeTask(taskId, this.props.id)
+    }
+
     render = () => {
+        let {tasks = []} = this.props;
+
         return (
-            <div className="todoList">
-                    <div>
-                        <div className="todoList__header">
-                            <TodoListTitle title={this.props.title} />
-                            <AddNewItemForm addItem={this.addTask} />
-                        </div>
-                        <TodoListTasks 
-                            changeStatus={this.changeStatus}
-                            changeTitle={this.changeTitle}
-                            tasks={this.state.tasks.filter(task =>
-                                this.state.filterValue === "All" 
-                                ?
-                                true
-                                :
-                                this.state.filterValue === "Completed"
-                                ?
-                                task.isDone === true
-                                :
-                                task.isDone === false
-                        )} />
-                     </div>
-                    <TodoListFooter 
-                        changeFilter={this.changeFilter} 
-                        filterValue={this.state.filterValue} 
-                    />
+        <div className="todoList">
+            <div>
+                <div className="todoList__header">
+                    <TodoListTitle title={this.props.title} />
+                    <AddNewItemForm addItem={this.addTask} />
                 </div>
+                <TodoListTasks
+                    changeStatus={this.changeStatus}
+                    changeTitle={this.changeTitle}
+                    removeTask={this.removeTask}
+                    tasks={tasks.filter(task =>
+                        this.state.filterValue === "All" 
+                        ?
+                        true
+                        :
+                        this.state.filterValue === "Completed"
+                        ?
+                        task.isDone === true
+                        :
+                        task.isDone === false
+                )} />
+                </div>
+            <TodoListFooter 
+                changeFilter={this.changeFilter} 
+                filterValue={this.state.filterValue} 
+            />
+            <button className="btn-close" onClick={this.showPopup} />
+            {this.state.showPopup
+            ?
+                <PopupRemove 
+                    removeTask={this.removeTodolist}
+                    hidePopup={this.hidePopup} />
+            :
+                null
+            }            
+        </div>
         );
     }
 }
 
-export default TodoList;
+const ConnectTodolist = connect(null, {
+    addNewTask, 
+    changeTask,
+    removeTask,
+    removeTodolist,
+    getTodolistTasks
+})(TodoList)
+export default ConnectTodolist;
 
